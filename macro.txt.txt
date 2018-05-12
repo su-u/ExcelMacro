@@ -1,0 +1,68 @@
+Option Explicit
+
+Public people As Integer
+Public Times As Integer
+Public Days As Integer
+Public OneDay As Integer
+Public shift_max As Integer
+Public people_count As Integer
+Public average As Integer
+
+Function IsShiftCheck(student As Integer, time As Integer) As Integer
+    Dim IsCheck As Integer
+    IsCheck = 0
+    
+    Dim j As Integer
+    Dim shift_count As Integer
+    Dim cell As Integer
+    shift_count = Sheets(1).cells(student, 1).Value
+        
+    cell = Sheets(1).cells(student, time).Value
+    
+    If cell = 0 And shift_count <= shift_max And shift_count <= average Then
+        IsCheck = 1
+    End If
+    
+    IsShiftCheck = IsCheck
+End Function
+
+
+Sub NameSchedule()
+    Randomize
+    people = Sheets(4).cells(1, 2).Value
+    Times = Sheets(4).cells(2, 2).Value
+    Days = Sheets(4).cells(3, 2).Value
+    OneDay = Sheets(4).cells(4, 2).Value
+    shift_max = Sheets(4).cells(5, 2).Value
+    average = 0
+    people_count = 0
+       
+    Dim i As Integer
+    Dim j As Integer
+    Dim rand As Integer
+    Dim i_max As Integer
+    Dim shift As Integer
+    i_max = ((Days * OneDay) + 3)
+    Worksheets(1).Select
+        For i = 4 To i_max Step 1
+        j = 0
+        Do
+            rand = Int((people * Rnd) + 3)
+            shift = IsShiftCheck(rand, i)
+            If shift = 1 Then
+                Sheets(1).cells(rand, i).Value = 1
+                Sheets(1).cells(rand, 1).Value = Sheets(1).cells(rand, 1).Value + 1
+                j = j + 1
+                people_count = people_count + 1
+                If people_count = people Then
+                    people_count = 0
+                    average = average + 1
+                End If
+            End If
+        Loop While j < Times
+    Next i
+    
+End Sub
+Sub TimeSchedule()
+
+End Sub
